@@ -5,6 +5,8 @@ import { useSchool, useUpdateSchool } from "@/lib/hooks/use-schools"
 import { SchoolForm } from "@/components/school-form"
 import { Skeleton } from "@/components/ui/skeleton"
 import { use } from "react"
+import { ArrowLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function EditSchoolPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
@@ -13,12 +15,8 @@ export default function EditSchoolPage({ params }: { params: Promise<{ id: strin
     const updateMutation = useUpdateSchool(id)
 
     const handleSubmit = async (formData: FormData) => {
-        try {
-            await updateMutation.mutateAsync(formData)
-            router.push("/")
-        } catch (error) {
-            // Error is already handled by the mutation
-        }
+        await updateMutation.mutateAsync(formData)
+        router.push("/")
     }
 
     if (isFetching) {
@@ -35,8 +33,13 @@ export default function EditSchoolPage({ params }: { params: Promise<{ id: strin
     if (!school) return null
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-2xl">
-            <h1 className="text-3xl font-bold mb-8">Edit School</h1>
+        <div className="container mx-auto space-y-8 px-4 py-8 max-w-2xl">
+            <div className="flex items-center justify-between">
+                <Button onClick={() => router.push('/')}>
+                    <ArrowLeft /> Home
+                </Button>
+                <h1 className="text-3xl font-bold">Edit School</h1>
+            </div>
             <div className="bg-card p-6 rounded-lg border">
                 <SchoolForm
                     initialData={school}
