@@ -30,15 +30,15 @@ export async function GET(
 
 export async function PUT(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const id = parseInt(params.id);
+        const { id } = await params;
         const { fields, files } = await parseForm(req);
         const imageFile = files.image?.[0];
 
         const existingSchool = await prisma.school.findUnique({
-            where: { id },
+            where: { id: parseInt(id) },
         });
 
         if (!existingSchool) {
@@ -66,7 +66,7 @@ export async function PUT(
         }
 
         const school = await prisma.school.update({
-            where: { id },
+            where: { id: parseInt(id) },
             data: updateData,
         });
 
@@ -82,12 +82,12 @@ export async function PUT(
 
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const id = parseInt(params.id);
+        const { id } = await params;
         const school = await prisma.school.findUnique({
-            where: { id },
+            where: { id: parseInt(id) },
         });
 
         if (!school) {
@@ -103,7 +103,7 @@ export async function DELETE(
         }
 
         await prisma.school.delete({
-            where: { id },
+            where: { id: parseInt(id) },
         });
 
         return NextResponse.json({ message: 'School deleted successfully' });
