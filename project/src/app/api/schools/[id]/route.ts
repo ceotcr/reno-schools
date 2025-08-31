@@ -71,7 +71,7 @@ export async function PUT(
                 await removeFile(existingSchool.image);
             }
             // Store the pathname in image field
-            updateData.image = imageFile.pathname;
+            updateData.image = imageFile.url;
         }
 
         const school = await prisma.school.update({
