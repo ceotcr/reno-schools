@@ -37,7 +37,6 @@ export const useCreateSchool = () => {
 
     return useMutation({
         mutationFn: (formData: FormData) => {
-            toast.loading("Creating school...")
             return SchoolService.create(formData)
         },
         onSuccess: () => {
@@ -55,7 +54,6 @@ export const useUpdateSchool = (id: string) => {
 
     return useMutation({
         mutationFn: (formData: FormData) => {
-            toast.loading("Updating school...")
             return SchoolService.update(id, formData)
         },
         onSuccess: () => {
@@ -74,7 +72,6 @@ export const useDeleteSchool = () => {
 
     return useMutation({
         mutationFn: (id: number) => {
-            toast.loading("Deleting school...")
             return SchoolService.delete(id)
         },
         onSuccess: () => {
