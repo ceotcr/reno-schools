@@ -70,7 +70,8 @@ export async function PUT(
             if (existingSchool.image) {
                 await removeFile(existingSchool.image);
             }
-            updateData.image = `/schoolImages/${imageFile.newFilename}`;
+            // Store the pathname in image field
+            updateData.image = imageFile.pathname;
         }
 
         const school = await prisma.school.update({

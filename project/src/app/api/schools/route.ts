@@ -26,8 +26,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const imageUrl = `/schoolImages/${imageFile.newFilename}`;
-
+        // Store the pathname in the image field
         const school = await prisma.school.create({
             data: {
                 name: fields.name?.[0] as string,
@@ -36,7 +35,7 @@ export async function POST(req: NextRequest) {
                 state: fields.state?.[0] as string,
                 contact: fields.contact?.[0] as string,
                 email_id: fields.email_id?.[0] as string,
-                image: imageUrl,
+                image: imageFile.url,
             },
         });
 

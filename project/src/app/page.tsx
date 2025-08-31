@@ -11,7 +11,6 @@ export default function HomePage() {
   const deleteMutation = useDeleteSchool()
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this school?")) return
     await deleteMutation.mutateAsync(id)
   }
 

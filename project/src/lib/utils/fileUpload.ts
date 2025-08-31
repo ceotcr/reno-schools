@@ -1,69 +1,51 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import formidable from 'formidable';
+import { put, del } from '@vercel/blob';
 import { NextRequest } from 'next/server';
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
+interface FileData {
+    url: string;
+    pathname: string;
+}
+
+interface FormResult {
+    fields: Record<string, string[]>;
+    files: Record<string, FileData[]>;
+}
 
 export const parseForm = async (
     req: NextRequest
-): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
+): Promise<FormResult> => {
     const formData = await req.formData();
-
-    const fields: formidable.Fields = Object.create(null);
-    const files: formidable.Files = Object.create(null);
+    const fields: Record<string, string[]> = {};
+    const files: Record<string, FileData[]> = {};
 
     // Process each entry in the FormData
     for (const [key, value] of formData.entries()) {
         if (value instanceof File) {
-            // Handle file
-            const buffer = Buffer.from(await value.arrayBuffer());
-            const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(value.name)}`;
-            const filepath = path.join(process.cwd(), 'public/schoolImages', filename);
+            // Handle file upload to Vercel Blob
+            const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+            const blob = await put(filename, value, {
+                access: 'public',
+                addRandomSuffix: true,
+            });
 
-            await fs.writeFile(filepath, buffer);
-
-            const stats = await fs.stat(filepath);
-
-            const file = Object.assign(Object.create(null), {
-                filepath,
-                newFilename: filename,
-                originalFilename: value.name,
-                mimetype: value.type,
-                size: value.size,
-                lastModifiedDate: new Date(),
-                hashAlgorithm: null,
-                hash: "",
-                toJSON() {
-                    return {
-                        filepath,
-                        newFilename: filename,
-                        originalFilename: value.name,
-                        mimetype: value.type,
-                        size: value.size,
-                        length: value.size,
-                        mtime: stats.mtime
-                    };
-                }
-            }) as formidable.File;
-
-            Object.assign(files, { [key]: [file] });
+            files[key] = [{
+                url: blob.url,
+                pathname: blob.pathname
+            }];
         } else {
             // Handle other form fields
-            Object.assign(fields, { [key]: [value.toString()] });
+            fields[key] = [value.toString()];
         }
     }
 
     return { fields, files };
 };
 
-export const removeFile = async (filePath: string) => {
+export const removeFile = async (pathname: string) => {
     try {
-        await fs.unlink(path.join(process.cwd(), 'public', filePath));
+        if (pathname) {
+            await del(pathname);
+        }
     } catch (error) {
         console.error('Error removing file:', error);
     }
