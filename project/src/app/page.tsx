@@ -13,13 +13,7 @@ export default function HomePage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this school?")) return
-
-    try {
-      await deleteMutation.mutateAsync(id)
-      toast.success("School deleted successfully")
-    } catch (error) {
-      toast.error("Failed to delete school")
-    }
+    await deleteMutation.mutateAsync(id)
   }
 
   return (

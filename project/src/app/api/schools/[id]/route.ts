@@ -34,7 +34,7 @@ export async function PUT(
 ) {
     try {
         const id = parseInt(params.id);
-        const { fields, files } = await parseForm(req as any);
+        const { fields, files } = await parseForm(req);
         const imageFile = files.image?.[0];
 
         const existingSchool = await prisma.school.findUnique({

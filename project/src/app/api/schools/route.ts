@@ -17,8 +17,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     try {
-        const { fields, files } = await parseForm(req as any);
-        const imageFile = files.image?.[0] as File;
+        const { fields, files } = await parseForm(req);
+        const imageFile = files.image?.[0];
 
         if (!imageFile) {
             return NextResponse.json(

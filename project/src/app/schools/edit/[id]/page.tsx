@@ -14,10 +14,9 @@ export default function EditSchoolPage({ params }: { params: { id: string } }) {
     const handleSubmit = async (formData: FormData) => {
         try {
             await updateMutation.mutateAsync(formData)
-            toast.success("School updated successfully")
             router.push("/")
         } catch (error) {
-            toast.error("Failed to update school")
+            // Error is already handled by the mutation
         }
     }
 

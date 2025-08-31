@@ -12,10 +12,9 @@ export default function NewSchoolPage() {
     const handleSubmit = async (formData: FormData) => {
         try {
             await createMutation.mutateAsync(formData)
-            toast.success("School created successfully")
             router.push("/")
         } catch (error) {
-            toast.error("Failed to create school")
+            // Error is already handled by the mutation
         }
     }
 

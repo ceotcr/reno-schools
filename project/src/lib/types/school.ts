@@ -6,8 +6,8 @@ export const schoolFormSchema = z.object({
     city: z.string().min(2, "City must be at least 2 characters"),
     state: z.string().min(2, "State must be at least 2 characters"),
     contact: z.string().min(10, "Contact must be at least 10 characters"),
-    email_id: z.string().email("Invalid email address"),
-    image: z.any(),
+    email_id: z.email("Invalid email address"),
+    image: z.any().nonoptional("School image is required"),
 })
 
 export type SchoolFormValues = z.infer<typeof schoolFormSchema>
