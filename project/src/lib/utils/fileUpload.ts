@@ -13,17 +13,9 @@ export const parseForm = async (
     req: NextRequest
 ): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
     const formData = await req.formData();
-    const form = formidable({
-        uploadDir: path.join(process.cwd(), 'public/schoolImages'),
-        filename: (name, ext, part) => {
-            const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-            return `${uniqueSuffix}${ext}`;
-        },
-        maxFileSize: 5 * 1024 * 1024, // 5MB
-    });
 
-    const fields: Record<string, string[]> = {};
-    const files: Record<string, any[]> = {};
+    const fields: formidable.Fields = Object.create(null);
+    const files: formidable.Files = Object.create(null);
 
     // Process each entry in the FormData
     for (const [key, value] of formData.entries()) {
@@ -35,16 +27,34 @@ export const parseForm = async (
 
             await fs.writeFile(filepath, buffer);
 
-            files[key] = [{
+            const stats = await fs.stat(filepath);
+
+            const file = Object.assign(Object.create(null), {
                 filepath,
                 newFilename: filename,
                 originalFilename: value.name,
                 mimetype: value.type,
-                size: value.size
-            }];
+                size: value.size,
+                lastModifiedDate: new Date(),
+                hashAlgorithm: null,
+                hash: "",
+                toJSON() {
+                    return {
+                        filepath,
+                        newFilename: filename,
+                        originalFilename: value.name,
+                        mimetype: value.type,
+                        size: value.size,
+                        length: value.size,
+                        mtime: stats.mtime
+                    };
+                }
+            }) as formidable.File;
+
+            Object.assign(files, { [key]: [file] });
         } else {
             // Handle other form fields
-            fields[key] = [value.toString()];
+            Object.assign(fields, { [key]: [value.toString()] });
         }
     }
 

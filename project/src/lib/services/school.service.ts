@@ -1,4 +1,4 @@
-import type { School, SchoolFormValues } from "@/lib/types/school"
+import type { School } from "@/lib/types/school"
 
 export const SchoolService = {
     getAll: async (): Promise<School[]> => {

@@ -6,8 +6,6 @@ import { useSchools, useDeleteSchool } from "@/lib/hooks/use-schools"
 import { SchoolCard } from "@/components/school-card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from "sonner"
-
 export default function HomePage() {
   const { data: schools = [], isLoading } = useSchools()
   const deleteMutation = useDeleteSchool()

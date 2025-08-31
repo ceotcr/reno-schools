@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { parseForm } from '@/lib/utils/fileUpload';
-import type { File } from 'formidable';
 
 export async function GET() {
     try {
         const schools = await prisma.school.findMany();
         return NextResponse.json({ schools });
-    } catch (error) {
+    } catch (_) {
         return NextResponse.json(
             { error: 'Failed to fetch schools' },
             { status: 500 }

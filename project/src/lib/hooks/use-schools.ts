@@ -43,7 +43,7 @@ export const useCreateSchool = () => {
             queryClient.invalidateQueries({ queryKey: ["schools"] })
             toast.success("School created successfully")
         },
-        onError: (error) => {
+        onError: () => {
             toast.error("Failed to create school")
         },
     })
@@ -61,7 +61,7 @@ export const useUpdateSchool = (id: string) => {
             queryClient.invalidateQueries({ queryKey: ["schools", id] })
             toast.success("School updated successfully")
         },
-        onError: (error) => {
+        onError: () => {
             toast.error("Failed to update school")
         },
     })
@@ -78,7 +78,7 @@ export const useDeleteSchool = () => {
             queryClient.invalidateQueries({ queryKey: ["schools"] })
             toast.success("School deleted successfully")
         },
-        onError: (error) => {
+        onError: () => {
             toast.error("Failed to delete school")
         },
     })

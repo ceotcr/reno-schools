@@ -20,7 +20,7 @@ export async function GET(
         }
 
         return NextResponse.json(school);
-    } catch (error) {
+    } catch (_) {
         return NextResponse.json(
             { error: 'Failed to fetch school' },
             { status: 500 }
@@ -48,7 +48,15 @@ export async function PUT(
             );
         }
 
-        const updateData: any = {
+        const updateData: {
+            name?: string;
+            address?: string;
+            city?: string;
+            state?: string;
+            contact?: string;
+            email_id?: string;
+            image?: string;
+        } = {
             name: fields.name?.[0],
             address: fields.address?.[0],
             city: fields.city?.[0],

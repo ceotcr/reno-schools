@@ -138,7 +138,7 @@ export function SchoolForm({ initialData, onSubmit, isLoading }: SchoolFormProps
                 <FormField
                     control={form.control}
                     name="image"
-                    render={({ field: { onChange, value, ...field } }) => (
+                    render={({ field: { onChange, ...field } }) => (
                         <FormItem>
                             <FormLabel>School Image</FormLabel>
                             <FormControl>
