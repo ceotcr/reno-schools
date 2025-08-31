@@ -3,13 +3,14 @@
 import { useRouter } from "next/navigation"
 import { useSchool, useUpdateSchool } from "@/lib/hooks/use-schools"
 import { SchoolForm } from "@/components/school-form"
-import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
+import { use } from "react"
 
-export default function EditSchoolPage({ params }: { params: { id: string } }) {
+export default function EditSchoolPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params)
     const router = useRouter()
-    const { data: school, isLoading: isFetching } = useSchool(params.id)
-    const updateMutation = useUpdateSchool(params.id)
+    const { data: school, isLoading: isFetching } = useSchool(id)
+    const updateMutation = useUpdateSchool(id)
 
     const handleSubmit = async (formData: FormData) => {
         try {
