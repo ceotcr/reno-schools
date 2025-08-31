@@ -138,15 +138,19 @@ export function SchoolForm({ initialData, onSubmit, isLoading }: SchoolFormProps
                 <FormField
                     control={form.control}
                     name="image"
-                    render={({ field: { onChange, ...field } }) => (
+                    render={({ field: { onChange } }) => (
                         <FormItem>
                             <FormLabel>School Image</FormLabel>
                             <FormControl>
                                 <Input
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => onChange(e.target.files)}
-                                    {...field}
+                                    onChange={(e) => {
+                                        const files = e.target.files;
+                                        if (files?.length) {
+                                            onChange(files);
+                                        }
+                                    }}
                                 />
                             </FormControl>
                             <FormMessage />
