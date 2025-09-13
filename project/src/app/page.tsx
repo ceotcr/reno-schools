@@ -42,6 +42,7 @@ export default function HomePage() {
                 }
               </Link>
             </Button>
+            <AvatarDropdown />
           </div>
         </div>
 
@@ -61,22 +62,26 @@ export default function HomePage() {
             <School className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
             <h2 className="text-2xl font-semibold mb-2">No schools found</h2>
             <p className="text-muted-foreground mb-6 max-w-sm mx-auto">Get started by adding your first school to the directory.</p>
-            <Button asChild size="lg" variant="outline">
-              <Link href={
-                (session && session.user) ? "/schools/new" : "/auth"
-              } className="gap-2">
-                {
-                  (session && session.user && session.user.id) ?
-                    <>
-                      <Plus className="w-5 h-5" />
-                      Add New School
-                    </> :
-                    <>
-                      Signin
-                    </>
-                }
-              </Link>
-            </Button>
+
+            <div className="flex items-center gap-4">
+              <Button asChild size="lg" variant="outline">
+                <Link href={
+                  (session && session.user) ? "/schools/new" : "/auth"
+                } className="gap-2">
+                  {
+                    (session && session.user && session.user.id) ?
+                      <>
+                        <Plus className="w-5 h-5" />
+                        Add New School
+                      </> :
+                      <>
+                        Signin
+                      </>
+                  }
+                </Link>
+              </Button>
+              <AvatarDropdown />
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-in fade-in duration-500">
