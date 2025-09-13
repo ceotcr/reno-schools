@@ -3,6 +3,8 @@ import { Poppins } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { authOptions } from "@/lib/auth/authOptions";
+import { getServerSession } from "next-auth/next";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -15,17 +17,18 @@ export const metadata: Metadata = {
   description: "A directory of schools with their details",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
   return (
     <html lang="en">
       <body
         className={`${poppins.className} antialiased`}
       >
-        <Providers>
+        <Providers session={session}>
           {children}
           <Toaster />
         </Providers>

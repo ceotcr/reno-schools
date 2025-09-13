@@ -6,8 +6,11 @@ import { useSchools, useDeleteSchool } from "@/lib/hooks/use-schools"
 import { SchoolCard } from "@/components/school-card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useSession } from "next-auth/react"
+import { AvatarDropdown } from "@/components/avatar-dropdown"
 export default function HomePage() {
   const { data: schools = [], isLoading } = useSchools()
+  const { data: session } = useSession()
   const deleteMutation = useDeleteSchool()
 
   const handleDelete = async (id: number) => {
@@ -22,12 +25,24 @@ export default function HomePage() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 text-transparent bg-clip-text">Schools Directory</h1>
             <p className="text-muted-foreground mt-2">Discover and manage educational institutions</p>
           </div>
-          <Button asChild size="lg" className="shadow-lg hover:shadow-primary/20 transition-all duration-300">
-            <Link href="/schools/new" className="gap-2">
-              <Plus className="w-5 h-5" />
-              Add New School
-            </Link>
-          </Button>
+          <div className="flex items-center gap-4">
+            <Button asChild size="lg" variant="outline">
+              <Link href={
+                (session && session.user) ? "/schools/new" : "/auth"
+              } className="gap-2">
+                {
+                  (session && session.user && session.user.id) ?
+                    <>
+                      <Plus className="w-5 h-5" />
+                      Add New School
+                    </> :
+                    <>
+                      Signin
+                    </>
+                }
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {isLoading ? (
@@ -47,9 +62,19 @@ export default function HomePage() {
             <h2 className="text-2xl font-semibold mb-2">No schools found</h2>
             <p className="text-muted-foreground mb-6 max-w-sm mx-auto">Get started by adding your first school to the directory.</p>
             <Button asChild size="lg" variant="outline">
-              <Link href="/schools/new" className="gap-2">
-                <Plus className="w-5 h-5" />
-                Add New School
+              <Link href={
+                (session && session.user) ? "/schools/new" : "/auth"
+              } className="gap-2">
+                {
+                  (session && session.user && session.user.id) ?
+                    <>
+                      <Plus className="w-5 h-5" />
+                      Add New School
+                    </> :
+                    <>
+                      Signin
+                    </>
+                }
               </Link>
             </Button>
           </div>

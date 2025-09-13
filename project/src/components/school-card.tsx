@@ -6,6 +6,8 @@ import { School } from "@/lib/types/school"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 interface SchoolCardProps {
     school: School
@@ -14,7 +16,8 @@ interface SchoolCardProps {
 
 export function SchoolCard({ school, onDelete }: SchoolCardProps) {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-
+    const { data: session } = useSession()
+    const router = useRouter()
     return (
         <Card className="flex flex-col h-full py-0 overflow-hidden group hover:shadow-lg transition-all duration-300 border-2">
             <CardHeader className="relative h-48 p-0">
@@ -57,7 +60,7 @@ export function SchoolCard({ school, onDelete }: SchoolCardProps) {
                     variant="outline"
                     className="flex-1 hover:bg-secondary hover:text-secondary-foreground transition-colors duration-300"
                 >
-                    <Link href={`/schools/edit/${school.id}`}>
+                    <Link href={(session && session.user) ? `/schools/edit/${school.id}` : "/auth"}>
                         <Pencil className="w-4 h-4 mr-2" />
                         Edit
                     </Link>
@@ -65,7 +68,9 @@ export function SchoolCard({ school, onDelete }: SchoolCardProps) {
                 <Button
                     variant="destructive"
                     className="flex-1 hover:bg-destructive/90 transition-colors duration-300"
-                    onClick={() => setIsDeleteDialogOpen(true)}
+                    onClick={() => {
+                        session && session.user ? setIsDeleteDialogOpen(true) : router.push("/auth");
+                    }}
                 >
                     <Trash className="w-4 h-4 mr-2" />
                     Delete

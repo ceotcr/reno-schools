@@ -4,15 +4,32 @@ import { useRouter } from "next/navigation"
 import { useSchool, useUpdateSchool } from "@/lib/hooks/use-schools"
 import { SchoolForm } from "@/components/school-form"
 import { Skeleton } from "@/components/ui/skeleton"
-import { use } from "react"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { use, useEffect } from "react"
+import { useSession } from "next-auth/react"
 
 export default function EditSchoolPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
     const router = useRouter()
+    const { data: session, status } = useSession()
     const { data: school, isLoading: isFetching } = useSchool(id)
     const updateMutation = useUpdateSchool(id)
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/auth")
+        }
+    }, [router, session])
+
+    // Redirect to /auth if not signed in
+    if (status === "loading") {
+        return null
+    }
+    if (!session || !session.user) {
+        router.push("/auth")
+        return null
+    }
 
     const handleSubmit = async (formData: FormData) => {
         await updateMutation.mutateAsync(formData)
