@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { parseForm, removeFile } from '@/lib/utils/fileUpload';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth/authOptions';
 
 export async function GET(
     _req: NextRequest,
@@ -33,6 +35,10 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user || !session.user.id) {
+            return new Response("Unauthorized", { status: 401 });
+        }
         const { id } = await params;
         const { fields, files } = await parseForm(req);
         const imageFile = files.image?.[0];
@@ -93,6 +99,10 @@ export async function DELETE(
     req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user || !session.user.id) {
+        return new Response("Unauthorized", { status: 401 });
+    }
     try {
         const { id } = await params;
         const school = await prisma.school.findUnique({

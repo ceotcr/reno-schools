@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { parseForm } from '@/lib/utils/fileUpload';
+import { authOptions } from '@/lib/auth/authOptions';
+import { getServerSession } from 'next-auth/next';
 
 export async function GET() {
     try {
@@ -16,6 +18,10 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user || !session.user.id) {
+            return new Response("Unauthorized", { status: 401 });
+        }
         const { fields, files } = await parseForm(req);
         const imageFile = files.image?.[0];
 
